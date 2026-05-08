@@ -4,6 +4,7 @@ import com.project.hospitalManagement.entity.Insurance;
 import com.project.hospitalManagement.entity.Patient;
 import com.project.hospitalManagement.repository.InsuranceRepository;
 import com.project.hospitalManagement.repository.PatientRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,14 @@ public class InsuranceService {
         insurance.setPatient(patient); // bidirectional consistency maintainence
 
     return  patient;
+    }
+
+    @Transactional
+    public Patient disassociateInsuranceFromPatient (Long patientId){
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(()-> new EntityNotFoundException("Patient not found with id: "+patientId));
+
+        patient.setInsurance(null);
+        return patient;
     }
 }
