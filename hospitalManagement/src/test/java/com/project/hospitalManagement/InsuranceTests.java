@@ -4,53 +4,74 @@ import com.project.hospitalManagement.entity.Appointment;
 import com.project.hospitalManagement.entity.Insurance;
 import com.project.hospitalManagement.entity.Patient;
 
+import com.project.hospitalManagement.repository.PatientRepository;
 import com.project.hospitalManagement.service.AppointmentService;
 import com.project.hospitalManagement.service.InsuranceService;
 
+import com.project.hospitalManagement.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @SpringBootTest
 public class InsuranceTests {
 
-@Autowired
-    private  InsuranceService insuranceService;
-@Autowired
-private AppointmentService appointmentService;
+    @Autowired
+    private PatientRepository patientRepository;
+
+    @Autowired
+    private PatientService patientService;
+
     @Test
-    public void testInsurance(){
-        Insurance insurance = Insurance.builder()
-                .policyNumber("HDFC_1234")
-                .provider("HDFC")
-                .validUntil(LocalDate.of(1992,02,03))
-                .build();
+    public void testPatientRepository() {
 
-           Patient patient= insuranceService.assignInsuranceToPatient(insurance,1L);
-        System.out.println(patient);
+        List<Patient> patientList = patientRepository.findAllPatientWithAppointment();
+        System.out.println(patientList);
 
-       var newPatient = insuranceService.disassociateInsuranceFromPatient(patient.getId());
-        System.out.println(newPatient);
     }
 
     @Test
-    public void  testCreateAppointment(){
-        Appointment appointment = Appointment.builder()
-                .appointmentTime(LocalDateTime.of(2026,11,1,14,0,0))
-                .reason("Cancer")
-                .build();
+    public void testTransactionMethods() {
+//        Patient patient = patientService.getPatientById(1L);
 
-       var newAppointment= appointmentService.createNewAppointment(appointment,1L,2L);
-        System.out.println(newAppointment);
+//        Patient patient = patientRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("Patient not " +
+//                "found with id: 1"));
 
-        var updatedAppointment= appointmentService.reAssignAppointmentToAnotherDoctor(newAppointment.getId(), 3L);
-        System.out.println(updatedAppointment);
+//        Patient patient = patientRepository.findByName("Diya Patel");
 
+//        List<Patient> patientList = patientRepository.findByBirthDateOrEmail(LocalDate.of(1988, 3, 15), "diya" +
+//                ".patel@example.com");
+
+//        List<Patient> patientList = patientRepository.findByBornAfterDate(LocalDate.of(1993, 3, 14));
+
+        Page<Patient> patientList = patientRepository.findAllPatients(PageRequest.of(1, 2, Sort.by("name")));
+
+        for(Patient patient: patientList) {
+            System.out.println(patient);
+        }
+//
+//        List<Object[]> bloodGroupList = patientRepository.countEachBloodGroupType();
+//        for(Object[] objects: bloodGroupList) {
+//            System.out.println(objects[0] +" "+ objects[1]);
+//        }
+
+//        int rowsUpdated = patientRepository.updateNameWithId("Arav Sharma", 1L);
+//        System.out.println(rowsUpdated);
+
+//        List<BloodGroupCountResponseEntity> bloodGroupList = patientRepository.countEachBloodGroupType();
+//        for(BloodGroupCountResponseEntity bloodGroupCountResponse: bloodGroupList) {
+//            System.out.println(bloodGroupCountResponse);
+//        }
     }
-
 }
+
+

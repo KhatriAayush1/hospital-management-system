@@ -16,24 +16,28 @@ public class InsuranceService {
     private final InsuranceRepository insuranceRepository;
     private final PatientRepository patientRepository;
 
-
     @Transactional
-    public Patient assignInsuranceToPatient(Insurance insurance , Long patientId){
+    public Patient assignInsuranceToPatient(Insurance insurance, Long patientId) {
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(()-> new IllegalArgumentException("Patient not found with id: " +patientId));
+                .orElseThrow(() -> new EntityNotFoundException("Patient not found with id: " + patientId));
 
         patient.setInsurance(insurance);
         insurance.setPatient(patient); // bidirectional consistency maintainence
 
-    return  patient;
+        return patient;
     }
 
     @Transactional
-    public Patient disassociateInsuranceFromPatient (Long patientId){
+    public Patient disaccociateInsuranceFromPatient(Long patientId) {
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(()-> new EntityNotFoundException("Patient not found with id: "+patientId));
+                .orElseThrow(() -> new EntityNotFoundException("Patient not found with id: " + patientId));
 
         patient.setInsurance(null);
         return patient;
     }
+
+    // HW
+    //Create three appointment for a patient and then delete Patient
+
+
 }
