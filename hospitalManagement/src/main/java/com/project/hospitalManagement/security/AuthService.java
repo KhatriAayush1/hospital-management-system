@@ -2,6 +2,7 @@ package com.project.hospitalManagement.security;
 
 import com.project.hospitalManagement.dto.LoginRequestDto;
 import com.project.hospitalManagement.dto.LoginResponseDto;
+import com.project.hospitalManagement.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
         );
+        User user =(User) authentication.getPrincipal();
 
     }
 }
