@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
+    private final AuthUtil authUtil;
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 
@@ -21,6 +22,8 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
         );
         User user =(User) authentication.getPrincipal();
+        String token = authUtil.generateAccessToken(user);
 
+        return new LoginResponseDto(token,user.getId());
     }
 }
